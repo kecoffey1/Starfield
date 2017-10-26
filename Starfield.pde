@@ -1,88 +1,91 @@
-star [] k;
-
-
-void setup() {
-  size(1000,1000);
-   k = new star[1000];
+Particle [] k = {new OddballParticle(250,250,250,1)};
+void setup()
+{
+  size(500,500);
+  k = new Particle[1000];
   for (int i = 0; i < k.length ; i ++) {
-   k[i] = new star(500,500);
+    if(i%17== 0) {
+       k[i] = new OddballParticle(250,250,Math.random()*360,Math.random()*5);
+    } else if (i%100 == 0){
+       k[i] = new JumboParticle(250,250,Math.random()*360,Math.random()*5);
+    } else {
+      k[i] = new NormalParticle(250,250,Math.random()*360,Math.random()*5);
+    }
   }
 }
-int t = 20;
-int n = 0;
-void draw() {
-  if(n == 20) {
-    n = 0;
-    t += 1;
-  }
-  n += 1;
+void draw()
+{
   background(0);
-  
-  
-      for (int i = 0; i < 20; i ++) {
-       
-      k[t - i].move();
-      k[t - i ].show();
-       
-      }
+for (int i = 0; i <k.length; i ++) {
+  k[i].move();
+  k[i].show();
+  }
 
 }
-class oddBall {
-  int myX, myY;
-  float size;
-  double r1;
-    oddBall(float ize, int x, int y, double r) {
-      myX = x;
-      size = ize; 
-      myY = y;
-      r1 = r;
-    }
-    void show() {
-      if (r1 > .5) {
-      fill(0,255,0);
-     ellipse(myX,myY,size,size);   
-      fill(100,100,100);
-   
-    ellipse(myX,myY,size*3,size/2);
-      } else { 
-        fill((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
-     ellipse(myX,myY,size,size);   
-      fill(100,100,100);
-   
-    ellipse(myX,myY,size*3,size/2);
-      }
-    }
-}
-class star {
-  
-  int myX, myY;
-  double addX, addY;
-  float size;
-  
-  oddBall odd;
-    double r = Math.random();
-    double r1 = Math.random();
-    double r3 = Math.random();
-  star(int x, int y) {
+class NormalParticle implements Particle
+{
+    float myX;
+  float myY;
+  float col = 255;
+  double ang; 
+  double speed; 
+  NormalParticle() {
+    
+  }
+  NormalParticle(int x, int y, double a, double s) {
     myX = x;
+    myY = y;
+    ang = a;
+    speed = s; 
+  }
+  public void move() {
+     myX += (cos((float)ang)) * speed/2;
+     myY += (sin((float)ang)) * speed*2;
+  }
+  public void show() {
+    fill(col);
+    ellipse(myX, myY,50,50);
+  }
+}
+
+interface Particle
+{
+  public void show();
+  public void move();
+}
+class OddballParticle implements Particle
+{
+    float myX;
+  float myY;
+  float col = (int)(Math.random()*255);
+  double ang; 
+  double speed; 
+  OddballParticle(int x, int y, double a, double s) {
+    myX = x;
+    myY = y;
+    ang = a;
+    speed = s; 
+  }
+  public void move() {
+     myX += (cos((float)ang)) * speed/2;
+     myY += (sin((float)ang)) * speed*2;
+  }
+  public void show() {
+    fill(255-col,200-col,100+col);
+    rect(myX, myY,50,50);
+  }
+}
+class JumboParticle extends NormalParticle
+{
+  JumboParticle(int x, int y, double a, double s) {
+    myX = x; 
     myY = y; 
-    addX = r*20-10;
-    addY = r1*20-10;
-    size = 0;
+    speed = s;
+    ang = a;
+    
   }
-  void show() {
-    if (addX >= -15 && addX <= 15 && addY >= -1 && addY <= 1) {
-      odd = new oddBall(size, myX,myY, r3);
-      odd.show();
-    } else {
-    fill(255);
-   
-    ellipse(myX,myY,size,size);
-  }
-  }
-  void move() {
-     myX += addX;
-    myY += addY; 
-    size += .4;
+  public void show() {
+    fill(col);
+    ellipse(myX, myY,100,100);
   }
 }
